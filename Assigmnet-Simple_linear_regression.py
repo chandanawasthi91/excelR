@@ -174,6 +174,8 @@ np.mean(model.resid) #0
 np.mean(error) #0
 np.sqrt(sum(error**2)/12) #3.69
 
+import matplotlib.pyplot as plt
+plt.scatter(Delivery_time_predict,Delivery_time['Sorting Time'],c="r")
 
 '''
 3) Emp_data -> Build a prediction model for Churn_out_rate 
@@ -226,6 +228,9 @@ error = pred - Emp_data['Churn_out_rate']
 np.mean(model_emp.resid)#0
 np.sqrt(sum(error**2)/12) #1.44
 
+import matplotlib.pyplot as plt
+plt.scatter(pred,Emp_data['Salary_hike'],c="r")
+
 '''
 4) Salary_hike -> Build a prediction model for Salary_hike
 '''
@@ -272,3 +277,6 @@ error = pred - Salary_hike['Salary']
 np.mean(model.resid) #0
 
 np.sqrt(sum(error**2)/12) #8841.79
+
+import matplotlib.pyplot as plt
+plt.scatter(pred,Salary_hike['YearsExperience'],c="r")
