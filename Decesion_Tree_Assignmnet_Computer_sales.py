@@ -10,6 +10,7 @@ computer_sale.dtypes
 
 #lets considersales are high if > 7.5, creating the variable to identify sales as high or low
 computer_sale['Sale_Var'] = computer_sale['Sales'] >= 7.5
+computer_sale.drop("Sales",axis=1,inplace=True)
 computer_sale_str_columns = ['ShelveLoc','Urban','US','Sale_Var']
 
 #convert the string columns from numeric
