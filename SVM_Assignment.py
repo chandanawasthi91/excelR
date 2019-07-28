@@ -47,7 +47,7 @@ pred_test_rbf = model_rbf.predict(test_X)
 np.mean(pred_test_rbf==test_y) # Accuracy = 0.71
 
 '''
-1) Prepare a classification model using SVM for salary data 
+2) Prepare a classification model using SVM for salary data 
 '''
 
 Salary_data_test = pd.read_csv("C:\\Users\\cawasthi\\Desktop\\Data Science\\R ML Code\\SVM\\SalaryData_Test.csv")
