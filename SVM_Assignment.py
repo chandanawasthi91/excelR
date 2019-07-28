@@ -5,7 +5,6 @@ from timeit import default_timer as timer
 '''
 1) Prepare support vector machines model for classifying the area under fire for foresfires data
 '''
-
 forestfires = pd.read_csv("C:\\Users\\cawasthi\\Desktop\\Data Science\\R ML Code\\SVM\\forestfires.csv")
 forestfires.head()
 forestfires.describe()
