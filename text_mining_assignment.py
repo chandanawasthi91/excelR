@@ -297,10 +297,10 @@ import re
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 
-ACCESS_TOKEN = "1157869137638510593-c5WqkUMYaMJZtxGV5Ww9bfLWDdcaPd"
-ACCESS_SECRET_TOKEN = "f5pvx2partvnzD7eet7YgRLjSVSTOJKEh13mvUYHMN8AD"
-CONSUMER_KEY = "PL3li1NjCupgmhMZIA06N2ccO"
-CONSUMER_SECRET = "DcnKFVjz81jWsA5vhM0X938EviwTMzamjE9MG0RSpD3VBSTVYY"
+ACCESS_TOKEN = "############"
+ACCESS_SECRET_TOKEN = "##########"
+CONSUMER_KEY = "###############"
+CONSUMER_SECRET = "################"
 
 #import twitter_credentials as tc
 import tweepy
