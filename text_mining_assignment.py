@@ -85,6 +85,7 @@ with open("C:\\Users\\cawasthi\\Desktop\\Data Science\\R ML Code\\text mining\\N
 negativewords = negativewords.split("\n")
 whey_protein_rev_str_words = whey_protein_rev_str.split(" ")
 
+
 #stopwords = stopwords.split("\n")
 whey_protein_rev_str_words = [w for w in whey_protein_rev_str_words if not w in stopwords]
 whey_protein_rev_str_words = [w for w in whey_protein_rev_str_words if w in negativewords]
@@ -281,4 +282,190 @@ wordcloud_ip = WordCloud(
 plt.imshow(wordcloud_ip)
 plt.axis("off")
 plt.savefig('C:\\Users\\cawasthi\\Desktop\\Data Science\\R ML Code\\text mining\\super_30_positive.pdf',pad_inches=0.5,format='pdf')
+
+'''
+ ONE:
+1) Extract tweets for any user (try choosing a user who has more tweets)
+2) Perform sentimental analysis on the tweets extracted from the above
+'''
+
+import re
+import os
+print(os.getcwd())
+import pandas as pd
+import re
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
+
+ACCESS_TOKEN = "1157869137638510593-c5WqkUMYaMJZtxGV5Ww9bfLWDdcaPd"
+ACCESS_SECRET_TOKEN = "f5pvx2partvnzD7eet7YgRLjSVSTOJKEh13mvUYHMN8AD"
+CONSUMER_KEY = "PL3li1NjCupgmhMZIA06N2ccO"
+CONSUMER_SECRET = "DcnKFVjz81jWsA5vhM0X938EviwTMzamjE9MG0RSpD3VBSTVYY"
+
+#import twitter_credentials as tc
+import tweepy
+from tweepy.streaming import StreamListener
+from tweepy import OAuthHandler
+from tweepy import Stream
+from tweepy import Cursor
+from tweepy import API
+import time
+import pandas as pd
+import numpy as np
+
+class TwitterClient():
+	def __init__(self,twitter_user=None):
+		auth = TwitterAuthorization().authorizeTwitter()
+		self.twitterClient = API(auth)
+		self.twitter_user = twitter_user
+	
+	def get_twitter_client(self):
+		return self.twitterClient
+	
+	def read_timeline_tweets(self,num_of_tweets):
+		tweets = []
+		for tweet in Cursor(self.twitterClient.user_timeline,id=self.twitter_user).items(num_of_tweets):
+			tweets.append(tweet)
+		return tweets
+
+	def get_friends(self,num_of_friends):
+		friend_list = []
+		for friend in Cursor(self.twitterClient.friends).items(num_of_friends):
+			friend_list.append(friend)
+		return friend_list
+    
+class TwitterAuthorization:
+	def authorizeTwitter(self):
+		auth = OAuthHandler(CONSUMER_KEY,CONSUMER_SECRET)
+		auth.set_access_token(ACCESS_TOKEN,ACCESS_SECRET_TOKEN)
+		return auth
+    
+class TwitterStreamer:
+	def twitter_stream_tweets(self,hash_tags,file_name):
+		listener = StdOutListener(file_name)
+		TwitterAuthorizationobj = TwitterAuthorization()
+		auth = TwitterAuthorizationobj.authorizeTwitter()
+		stream = Stream(auth,listener)
+		stream.filter(track=hash_tags)
+
+class StdOutListener(StreamListener):
+	def __init__(self,tweet_file_name):
+		self.tweet_file_name=tweet_file_name
+	
+	def on_data(self,data):
+		try:
+			with open(self.tweet_file_name,'a') as tf:
+				tf.write(data)
+			return True
+		except BaseException as e:
+			print("Error in data %s" % str(e))
+		return True
+	
+	def on_error(self,status):
+		#Return false and terminate connection in rate limit occurs
+		print(status)
+		if status == 420:
+			return False
+		pass
+
+if __name__ == "__main__":
+    twitterclient = TwitterClient()
+    api = twitterclient.get_twitter_client()
+    tweets = api.user_timeline(screen_name='narendramodi', count = 500)
+
+    list_of_tweet_texts = [tweet.text for tweet in tweets ]
+    #print(list_of_tweet_texts)
+	
+tweet_df = pd.DataFrame(columns=["reviews"])
+tweet_df["reviews"] = list_of_tweet_texts
+
+
+tweet_df_rev_str = ""
+for i in list_of_tweet_texts:
+    #print( i)
+    tweet_df_rev_str = tweet_df_rev_str + i
+
+#tweet_df.to_csv("C:\\Users\\cawasthi\\Desktop\\Data Science\\R ML Code\\text mining\\tweets.csv",encoding="utf-8")
+
+tweet_df_rev_str = re.sub("[^A-Za-z" "]+"," ",tweet_df_rev_str).lower()
+tweet_df_rev_str = re.sub("[0-9" "]+"," ",tweet_df_rev_str)
+#print(tweet_df_rev_str)
+
+
+# words that contained in iphone 7 reviews
+tweet_df_rev_str_words = tweet_df_rev_str.split(" ")
+
+
+with open("C:\\Users\\cawasthi\\Desktop\\Data Science\\payslip\\New folder (2)\\sw.txt","r") as sw:
+    stopwords = sw.read()
+
+#stopwords = stopwords.split("\n")
+tweet_df_rev_str_words = [w for w in tweet_df_rev_str_words if not w in stopwords]
+
+
+# Joinining all the reviews into single paragraph 
+tweet_df_rev_str_words = " ".join(tweet_df_rev_str_words)
+
+wordcloud_ip = WordCloud(
+                      background_color='black',
+                      width=2500,
+                      height=2000,max_words=50,margin=10,random_state=1
+                     ).generate(tweet_df_rev_str_words)
+
+plt.imshow(wordcloud_ip)
+plt.axis("off")
+plt.savefig('C:\\Users\\cawasthi\\Desktop\\Data Science\\R ML Code\\text mining\\tweet.pdf',pad_inches=0.5,format='pdf')
+
+
+#negative sentiment analyis
+
+
+with open("C:\\Users\\cawasthi\\Desktop\\Data Science\\R ML Code\\text mining\\Negative.txt","r") as neg:
+    negativewords = neg.read()
+negativewords = negativewords.split("\n")
+#print(negativewords)
+tweet_df_rev_str_words = tweet_df_rev_str.split(" ")
+
+#stopwords = stopwords.split("\n")
+
+tweet_df_rev_str_words = [w for w in tweet_df_rev_str_words if w in negativewords]
+print(tweet_df_rev_str_words)
+# Joinining all the reviews into single paragraph 
+tweet_df_rev_str_words = " ".join(tweet_df_rev_str_words)
+
+wordcloud_ip = WordCloud(
+                      background_color='black',
+                      width=2500,
+                      height=2000,max_words=25,margin=10,random_state=1
+                     ).generate(tweet_df_rev_str_words)
+
+plt.imshow(wordcloud_ip)
+plt.axis("off")
+plt.savefig('C:\\Users\\cawasthi\\Desktop\\Data Science\\R ML Code\\text mining\\negative.pdf',pad_inches=0.5,format='pdf')
+
+
+
+#positive sentiment analyis
+
+with open("C:\\Users\\cawasthi\\Desktop\\Data Science\\R ML Code\\text mining\\Positive.txt","r") as neg:
+    positiveewords = neg.read()
+positiveewords = positiveewords.split("\n")
+tweet_df_rev_str_words = tweet_df_rev_str.split(" ")
+
+#stopwords = stopwords.split("\n")
+tweet_df_rev_str_words = [w for w in tweet_df_rev_str_words if w in positiveewords]
+
+
+# Joinining all the reviews into single paragraph 
+tweet_df_rev_str_words = " ".join(tweet_df_rev_str_words)
+
+wordcloud_ip = WordCloud(
+                      background_color='black',
+                      width=2500,
+                      height=2000,max_words=25,margin=10,random_state=1
+                     ).generate(tweet_df_rev_str_words)
+
+plt.imshow(wordcloud_ip)
+plt.axis("off")
+plt.savefig('C:\\Users\\cawasthi\\Desktop\\Data Science\\R ML Code\\text mining\\positive.pdf',pad_inches=0.5,format='pdf')
 
